@@ -24,6 +24,7 @@ function isValid(pw) {
 }
 
 // Userdata 기반 생성
+// Userdata 기반 생성
 function generateFromUserInfo(info) {
   const baseWords = [];
 
@@ -37,35 +38,50 @@ function generateFromUserInfo(info) {
     if (info.lastName) baseWords.push(info.lastName.toLowerCase());
   }
 
+  // 이니셜 기반 + 단어 전체 소문자 추가
   if (!info.options.useInitial) {
     const initialsLast = [];
     const initialsFirst = [];
+    const fullNameParts = new Set();
 
     if (info.lastName) {
+      // 대문자 추출
       for (const ch of info.lastName)
         if (/[A-Z]/.test(ch)) initialsLast.push(ch.toLowerCase());
+      // 단어 전체 소문자 추가
+      fullNameParts.add(info.lastName.toLowerCase());
     }
     if (info.firstName) {
       for (const ch of info.firstName)
         if (/[A-Z]/.test(ch)) initialsFirst.push(ch.toLowerCase());
+      fullNameParts.add(info.firstName.toLowerCase());
     }
 
-    if (initialsLast.length || initialsFirst.length) {
+    if (initialsLast.length || initialsFirst.length || fullNameParts.size > 0) {
       const combinations = new Set();
+
+      // 대문자 기반 이니셜 조합
       for (const l of initialsLast) {
         if (initialsFirst.length) {
           combinations.add(l + initialsFirst.join(''));
           combinations.add(initialsFirst.join('') + l);
-        } else combinations.add(l);
+        } else {
+          combinations.add(l);
+        }
       }
+
       if (initialsFirst.length) combinations.add(initialsFirst.join(''));
       if (initialsFirst.length && info.lastName)
         combinations.add(
           initialsFirst.join('') + info.lastName.toLowerCase()
         );
 
+      // initials 배열 그대로 넣기
       initialsLast.forEach((ch) => combinations.add(ch));
       initialsFirst.forEach((ch) => combinations.add(ch));
+
+      // fullNameParts (예: yun, seo) 추가
+      fullNameParts.forEach((word) => combinations.add(word));
 
       baseWords.push(...combinations);
     }
@@ -118,6 +134,7 @@ function generateFromUserInfo(info) {
 
   return { pw: Array.from(results), numberParts };
 }
+
 
 // Nord 기반 생성
 function generateFromNordWords(nordWords = [], numberParts = []) {
