@@ -1,15 +1,11 @@
-// nord 데이터 API 호출 방식으로 변경
+// Nord 데이터 불러오기
 async function loadNordData() {
   const [letters, mixed, numeric] = await Promise.all([
     fetch('/api/nord/letters').then((r) => r.json()),
     fetch('/api/nord/mixed').then((r) => r.json()),
     fetch('/api/nord/numeric').then((r) => r.json())
   ]);
-
-  return {
-    nordWord: [...letters, ...mixed],
-    nordNum: numeric,
-  };
+  return { nordWord: [...letters, ...mixed], nordNum: numeric };
 }
 
 function isValid(pw) {
@@ -23,8 +19,7 @@ function isValid(pw) {
   );
 }
 
-// Userdata 기반 생성
-// Userdata 기반 생성
+// 사용자 입력 기반 생성
 function generateFromUserInfo(info) {
   const baseWords = [];
 
@@ -38,63 +33,47 @@ function generateFromUserInfo(info) {
     if (info.lastName) baseWords.push(info.lastName.toLowerCase());
   }
 
-  // 이니셜 기반 + 단어 전체 소문자 추가
+  // 이니셜 + CamelCase 분리
   if (!info.options.useInitial) {
     const initialsLast = [];
     const initialsFirst = [];
     const fullNameParts = new Set();
 
     if (info.lastName) {
-      // 대문자 추출
       for (const ch of info.lastName)
         if (/[A-Z]/.test(ch)) initialsLast.push(ch.toLowerCase());
-      // 단어 전체 소문자 추가
       fullNameParts.add(info.lastName.toLowerCase());
     }
     if (info.firstName) {
       for (const ch of info.firstName)
         if (/[A-Z]/.test(ch)) initialsFirst.push(ch.toLowerCase());
       fullNameParts.add(info.firstName.toLowerCase());
+      info.firstName
+        .split(/(?=[A-Z])/)
+        .forEach((part) => fullNameParts.add(part.toLowerCase()));
     }
 
-    if (initialsLast.length || initialsFirst.length || fullNameParts.size > 0) {
-      const combinations = new Set();
-
-      // 대문자 기반 이니셜 조합
-      for (const l of initialsLast) {
-        if (initialsFirst.length) {
-          combinations.add(l + initialsFirst.join(''));
-          combinations.add(initialsFirst.join('') + l);
-        } else {
-          combinations.add(l);
-        }
-      }
-
-      if (initialsFirst.length) combinations.add(initialsFirst.join(''));
-      if (initialsFirst.length && info.lastName)
-        combinations.add(
-          initialsFirst.join('') + info.lastName.toLowerCase()
-        );
-
-      // initials 배열 그대로 넣기
-      initialsLast.forEach((ch) => combinations.add(ch));
-      initialsFirst.forEach((ch) => combinations.add(ch));
-
-      // fullNameParts (예: yun, seo) 추가
-      fullNameParts.forEach((word) => combinations.add(word));
-
-      baseWords.push(...combinations);
+    const combinations = new Set();
+    for (const l of initialsLast) {
+      if (initialsFirst.length) {
+        combinations.add(l + initialsFirst.join(''));
+        combinations.add(initialsFirst.join('') + l);
+      } else combinations.add(l);
     }
+    if (initialsFirst.length) combinations.add(initialsFirst.join(''));
+    if (initialsFirst.length && info.lastName)
+      combinations.add(initialsFirst.join('') + info.lastName.toLowerCase());
+
+    initialsLast.forEach((ch) => combinations.add(ch));
+    initialsFirst.forEach((ch) => combinations.add(ch));
+    fullNameParts.forEach((word) => combinations.add(word));
+
+    baseWords.push(...combinations);
   }
 
-  // numberParts
+  // 숫자 조합
   const numberParts = [];
-  if (
-    info.birthYear &&
-    info.birthMonth &&
-    info.birthDay &&
-    !info.options.noBirth
-  ) {
+  if (info.birthYear && info.birthMonth && info.birthDay && !info.options.noBirth) {
     numberParts.push(
       info.birthYear,
       info.birthYear.slice(2),
@@ -125,8 +104,9 @@ function generateFromUserInfo(info) {
           `${word}${s}${num}`,
           `${s}${num}${word}`,
           `${num}${word}${s}`,
-          `${num}${s}${word}`,
+          `${num}${s}${word}`
         ];
+        if (isValid(word + num)) results.add(word + num);
         for (let pw of patterns) if (isValid(pw)) results.add(pw);
       }
     }
@@ -134,7 +114,6 @@ function generateFromUserInfo(info) {
 
   return { pw: Array.from(results), numberParts };
 }
-
 
 // Nord 기반 생성
 function generateFromNordWords(nordWords = [], numberParts = []) {
@@ -149,7 +128,7 @@ function generateFromNordWords(nordWords = [], numberParts = []) {
           `${word}${s}${num}`,
           `${s}${num}${word}`,
           `${num}${word}${s}`,
-          `${num}${s}${word}`,
+          `${num}${s}${word}`
         ];
         for (let pw of patterns) if (isValid(pw)) results.add(pw);
       }
@@ -158,14 +137,8 @@ function generateFromNordWords(nordWords = [], numberParts = []) {
   return Array.from(results);
 }
 
-// Mixed 생성 (10,000개 제한)
-function generateMixPasswords(
-  userWords = [],
-  userNumbers = [],
-  nordWords = [],
-  nordNumbers = [],
-  limit = 10000
-) {
+// Mixed 생성
+function generateMixPasswords(userWords = [], userNumbers = [], nordWords = [], nordNumbers = [], limit = 10000) {
   const specials = ['!', '@', '#', '$'];
   const mixResults = new Set();
 
@@ -177,18 +150,10 @@ function generateMixPasswords(
             if (mixResults.size >= limit) return Array.from(mixResults);
 
             const patterns = [
-              `${s}${uw}${nn}`,
-              `${uw}${nn}${s}`,
-              `${uw}${s}${nn}`,
-              `${s}${nn}${uw}`,
-              `${nn}${uw}${s}`,
-              `${nn}${s}${uw}`,
-              `${s}${nw}${un}`,
-              `${nw}${un}${s}`,
-              `${nw}${s}${un}`,
-              `${s}${un}${nw}`,
-              `${un}${nw}${s}`,
-              `${un}${s}${nw}`,
+              `${s}${uw}${nn}`, `${uw}${nn}${s}`, `${uw}${s}${nn}`,
+              `${s}${nn}${uw}`, `${nn}${uw}${s}`, `${nn}${s}${uw}`,
+              `${s}${nw}${un}`, `${nw}${un}${s}`, `${nw}${s}${un}`,
+              `${s}${un}${nw}`, `${un}${nw}${s}`, `${un}${s}${nw}`
             ];
 
             for (let pw of patterns) {
@@ -219,5 +184,10 @@ export async function generatePasswords(info) {
     mixPw = generateMixPasswords(userPw, userNum, nordWord, nordNum, 10000);
   }
 
-  return { user: userPw, nord: nordPw, mix: mixPw };
+  // 결과 저장
+  const results = { user: userPw, nord: nordPw, mix: mixPw };
+  const allPasswords = [...results.user, ...results.nord, ...results.mix];
+  localStorage.setItem('finalPasswords', JSON.stringify(allPasswords));
+
+  return results;
 }
