@@ -56,14 +56,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // 비밀번호 생성
     const results = await generatePasswords(userData);
 
-    resultBox.innerHTML = `
-      <h3>USERDATA (총 ${results.user.length}개)</h3>
-      <pre>${results.user.slice(0, 30).join('\n')}</pre>
-      <h3>NORD (총 ${results.nord.length}개)</h3>
-      <pre>${results.nord.slice(0, 30).join('\n')}</pre>
-      <h3>MIX (총 ${results.mix.length}개)</h3>
-      <pre>${results.mix.slice(0, 30).join('\n')}</pre>
-    `;
+    // 결과 박스 초기화
+    resultBox.textContent = ''; 
+
+    // 보여줄 섹션 목록
+    const sections = [
+      { title: 'USERDATA', data: results.user },
+      { title: 'NORD', data: results.nord },
+      { title: 'MIX', data: results.mix }
+    ];
+
+    // 각 섹션별로 안전하게 DOM 생성
+    sections.forEach(section => {
+      // 제목
+      const h3 = document.createElement('h3');
+      h3.textContent = `${section.title} (총 ${section.data.length}개)`;
+      resultBox.appendChild(h3);
+
+      // 데이터
+      const pre = document.createElement('pre');
+      // textContent 사용 → HTML escape 자동 처리
+      pre.textContent = section.data.slice(0, 30).join('\n');
+      resultBox.appendChild(pre);
+    });
+
 
     // end.html로 이동 버튼 이벤트
     document.getElementById('endpage').addEventListener('click', () => {
