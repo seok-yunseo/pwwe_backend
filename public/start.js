@@ -1,7 +1,7 @@
 // start.js
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   // 스타일 통일
-  const style = document.createElement("style");
+  const style = document.createElement('style');
   style.textContent = `
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
     body { display:flex; justify-content:center; align-items:center; height:100vh;
@@ -18,21 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
   document.head.appendChild(style);
 
   // UI 생성
-  const container = document.createElement("div");
-  container.classList.add("container");
+  const container = document.createElement('div');
+  container.classList.add('container');
 
-  const title = document.createElement("h1");
-  title.textContent = "Welcome!";
+  const title = document.createElement('h1');
+  title.textContent = '환영합니다!';
 
-  const desc = document.createElement("p");
-  desc.innerHTML = `This website is for predicting user passwords.<br><br>
-                    Click the button below to get started.`;
+  const desc = document.createElement('p');
+  desc.innerHTML = `비밀번호를 예측하는 사이트 입니다.<br><br>
+                    시작하려면 아래 버튼을 눌러주세요.`;
 
-  const btn = document.createElement("button");
-  btn.classList.add("btn");
-  btn.textContent = "Get Started";
-  btn.addEventListener("click", () => {
-    window.location.href = "question.html";
+  const btn = document.createElement('button');
+  btn.classList.add('btn');
+  btn.textContent = 'Get Started';
+  btn.addEventListener('click', () => {
+    window.location.href = 'question.html';
   });
 
   container.appendChild(title);

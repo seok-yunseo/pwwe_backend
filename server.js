@@ -24,4 +24,6 @@ app.get('/api/nord/:type', (req, res) => {
 });
 
 // 서버 실행
-app.listen(PORT, () => console.log(`✅ Server running at http://localhost:${PORT}/start.html`));
+app.listen(PORT, () =>
+  console.log(`✅ Server running at http://localhost:${PORT}/start.html`)
+);

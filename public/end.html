@@ -1,71 +1,98 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>비밀번호 강도 체크</title>
-  <script src="https://cdn.jsdelivr.net/npm/zxcvbn@4.4.2/dist/zxcvbn.js"></script>
-  <script type="module" src="./end.js" defer></script>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
-    body {
-      display:flex; justify-content:center; align-items:center;
-      height:100vh; background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-      color:#fff; text-align:center;
-    }
-    .container {
-      background: rgba(255,255,255,0.05);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      width: 400px;
-      animation: fadeIn 0.8s ease-in;
-      text-align:center;
-    }
-    h2 { margin-bottom:15px; font-size:1.5rem; }
-    input[type="password"] {
-      width: 100%; padding:10px; margin-top:6px; font-size:1rem;
-      border:none; border-radius:6px;
-      background: rgba(255,255,255,0.1);
-      color:#fff;
-    }
-    input:focus { outline: 2px solid #ff9800; }
-    #pwStrength, #checkResult {
-      margin-top: 15px;
-      text-align: left;
-      background: rgba(255,255,255,0.1);
-      border-radius: 6px;
-      padding: 12px;
-      white-space: pre-wrap;
-      font-size: 0.9rem;
-      min-height: 60px;
-    }
-    #pwCount {
-      margin-top: 10px;
-      font-size: 0.8rem;
-      color: #ccc;
-    }
-    button {
-      width: 100%;
-      background: #ff9800;
-      color: #fff;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      padding: 10px;
-      margin-top: 8px;
-      cursor: pointer;
-    }
-    button:hover { background: #ffb74d; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>비밀번호 강도 체크 & 포함 여부</h2>
-    <input type="password" id="pwInput" placeholder="비밀번호 입력" autocomplete="off" />
-    <p id="pwStrength"></p>
-    <button id="checkBtn">리스트에 있는지 확인</button>
-    <div id="checkResult"></div>
-    <p id="pwCount"></p>
-  </div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>비밀번호 강도 체크</title>
+    <script type="module" src="./end.js" defer></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+        text-align: center;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        width: 400px;
+        animation: fadeIn 0.8s ease-in;
+        text-align: center;
+      }
+      h2 {
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+      }
+      input[type='password'] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      input:focus {
+        outline: 2px solid #ff9800;
+      }
+      #pwStrength,
+      #checkResult {
+        margin-top: 15px;
+        text-align: left;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 12px;
+        white-space: pre-wrap;
+        font-size: 0.9rem;
+        min-height: 60px;
+      }
+      #pwCount {
+        margin-top: 10px;
+        font-size: 0.8rem;
+        color: #ccc;
+      }
+      button {
+        width: 100%;
+        background: #ff9800;
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        padding: 10px;
+        margin-top: 8px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #ffb74d;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="end.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+    <div class="container">
+      <h2>비밀번호 강도 체크 & 포함 여부</h2>
+      <input
+        type="password"
+        id="pwInput"
+        placeholder="비밀번호 입력"
+        autocomplete="off"
+      />
+      <p id="pwStrength"></p>
+      <button id="checkBtn">리스트에 있는지 확인</button>
+      <div id="checkResult"></div>
+      <p id="pwCount"></p>
+    </div>
+  </body>
 </html>

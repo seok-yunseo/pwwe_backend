@@ -1,104 +1,211 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>비밀번호 생성기</title>
-  <link rel="stylesheet" href="./css/checkbox.css" />
-  <script type="module" src="./question.js" defer></script>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
-    body {
-      display:flex; justify-content:center; align-items:center;
-      height:100vh; background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-      color:#fff;
-    }
-    .container {
-      background: rgba(255,255,255,0.05);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      width: 550px;
-      animation: fadeIn 0.8s ease-in;
-      text-align:center;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    h2 { margin-bottom:8px; font-size:1.5rem; }
-    .notice { font-size: 0.9rem; color: #ccc; margin-bottom: 18px; }
-    label, .checkbox-wrapper { display:flex; align-items:center; margin-top:12px; justify-content:space-between; }
-    .question { text-align:left; flex:1; font-size:1rem; }
-    input[type="checkbox"] { width:auto; margin-left: 6px; }
-    input[type="text"], input[type="date"], button {
-      width:100%; padding:10px; margin-top:6px; font-size:1rem;
-      border:none; border-radius:6px;
-    }
-    input[type="text"], input[type="date"] {
-      background: rgba(255,255,255,0.1);
-      color:#fff;
-      text-transform: none;
-    }
-    input:focus { outline:2px solid #ff9800; }
-    button {
-      background:#ff9800; color:#fff; font-weight:bold; cursor:pointer;
-      margin-top:18px; transition:background 0.3s;
-    }
-    button:hover { background:#ffb74d; }
-    .hidden { display:none; }
-    #resultBox {
-      margin-top:20px; text-align:left;
-      background: rgba(255,255,255,0.1);
-      border-radius: 6px; padding:12px;
-      white-space:pre-wrap; font-size:0.9rem;
-    }
-    h3 { margin-top:20px; }
-    a.download-link {
-      display:block; text-align:center; margin-top:12px; color:#fff;
-      text-decoration:none; background:#ff9800; padding:10px; border-radius:6px;
-    }
-    a.download-link:hover { background:#ffb74d; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div id="step1">
-      <h2>Step 1: 기본 정보 입력</h2>
-      <div class="notice">※ 사용하지 않는 정보에 대해 체크해주세요.</div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>비밀번호 생성기</title>
+    <link rel="stylesheet" href="./css/checkbox.css" />
+    <script type="module" src="./question.js" defer></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        width: 550px;
+        animation: fadeIn 0.8s ease-in;
+        text-align: center;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      h2 {
+        margin-bottom: 8px;
+        font-size: 1.5rem;
+      }
+      .notice {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 18px;
+      }
+      label,
+      .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        margin-top: 12px;
+        justify-content: space-between;
+      }
+      .question {
+        text-align: left;
+        flex: 1;
+        font-size: 1rem;
+      }
+      input[type='checkbox'] {
+        width: auto;
+        margin-left: 6px;
+      }
+      input[type='text'],
+      input[type='date'],
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 6px;
+      }
+      input[type='text'],
+      input[type='date'] {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        text-transform: none;
+      }
+      input:focus {
+        outline: 2px solid #ff9800;
+      }
+      button {
+        background: #ff9800;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 18px;
+        transition: background 0.3s;
+      }
+      button:hover {
+        background: #ffb74d;
+      }
+      .hidden {
+        display: none;
+      }
+      #resultBox {
+        margin-top: 20px;
+        text-align: left;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 12px;
+        white-space: pre-wrap;
+        font-size: 0.9rem;
+      }
+      h3 {
+        margin-top: 20px;
+      }
+      a.download-link {
+        display: block;
+        text-align: center;
+        margin-top: 12px;
+        color: #fff;
+        text-decoration: none;
+        background: #ff9800;
+        padding: 10px;
+        border-radius: 6px;
+      }
+      a.download-link:hover {
+        background: #ffb74d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="step1">
+        <h2>Step 1: 기본 정보 입력</h2>
+        <div class="notice" style="color: red; margin-bottom: 4px">
+          ※ 비밀번호는 특수문자 1개만 포함해야 합니다.
+        </div>
+        <div class="notice" style="color: red; margin-bottom: 4px">
+          ※ 7-10자리의 비밀번호를 생각해주세요.
+        </div>
+        <div class="notice" style="color: yellow; margin-bottom: 4px">
+          ※ 사용하지 <span style="text-decoration: underline">않는</span> 정보에
+          대해 체크해주세요.
+        </div>
 
-      <div class="checkbox-wrapper"><span class="question">이름/성 사용</span><input type="checkbox" id="useName" /></div>
-      <input id="firstName" type="text" placeholder="이름 입력 (예: Min)" />
-      <input id="lastName" type="text" placeholder="성 입력 (예: Kim)" />
+        <div class="checkbox-wrapper">
+          <span class="question">이름/성 사용</span
+          ><input type="checkbox" id="useName" />
+        </div>
+        <input
+          id="firstName"
+          type="text"
+          placeholder="이름 입력, 이니셜은 대문자로 입력 (예: MinJi)"
+        />
+        <input id="lastName" type="text" placeholder="성 입력 (예: Kim)" />
 
-      <div class="checkbox-wrapper"><span class="question">이니셜 사용 (예: SY)</span><input type="checkbox" id="useInitial" /></div>
+        <div class="checkbox-wrapper">
+          <span class="question">이니셜 사용 (예: SY)</span
+          ><input type="checkbox" id="useInitial" />
+        </div>
 
-      <div class="checkbox-wrapper"><span class="question">생년월일</span><input type="checkbox" id="noBirth" /></div>
-      <input id="birth" type="date" />
+        <div class="checkbox-wrapper">
+          <span class="question">생년월일</span
+          ><input type="checkbox" id="noBirth" />
+        </div>
+        <input id="birth" type="date" />
 
-      <div class="checkbox-wrapper"><span class="question">휴대전화번호</span><input type="checkbox" id="noPhone" /></div>
-      <input id="phone" type="text" placeholder="01012345678" />
+        <div class="checkbox-wrapper">
+          <span class="question">휴대전화번호</span
+          ><input type="checkbox" id="noPhone" />
+        </div>
+        <input id="phone" type="text" placeholder="01012345678" />
 
-      <div class="checkbox-wrapper"><span class="question">집전화번호</span><input type="checkbox" id="noHomePhone" /></div>
-      <input id="homePhone" type="text" placeholder="집전화번호 (예: 0212345678)" />
+        <div class="checkbox-wrapper">
+          <span class="question">집전화번호</span
+          ><input type="checkbox" id="noHomePhone" />
+        </div>
+        <input
+          id="homePhone"
+          type="text"
+          placeholder="집전화번호 (예: 0212345678)"
+        />
 
-      <button id="toStep2">다음</button>
+        <button id="toStep2">다음</button>
+      </div>
+
+      <div id="step2" class="hidden">
+        <h2>Step 2: 추가 정보 입력</h2>
+
+        <div class="checkbox-wrapper">
+          <span class="question">닉네임 사용</span
+          ><input type="checkbox" id="useNick" />
+        </div>
+        <input id="nickname" type="text" placeholder="닉네임 입력" />
+
+        <div class="checkbox-wrapper">
+          <span class="question">반려동물 이름 사용</span
+          ><input type="checkbox" id="usePet" />
+        </div>
+        <input
+          id="petNames"
+          type="text"
+          placeholder="쉼표로 구분 (예: coco, choco)"
+        />
+
+        <div class="checkbox-wrapper">
+          <span class="question">자주 사용하는 숫자 사용</span
+          ><input type="checkbox" id="useFavNums" />
+        </div>
+        <input
+          id="favNums"
+          type="text"
+          placeholder="쉼표로 구분 (예: 77, 14, 99)"
+        />
+
+        <button id="generate">비밀번호 생성</button>
+        <button id="endpage">내가 생각했던 비밀번호는 안전할까?</button>
+      </div>
+
+      <div id="resultBox"></div>
     </div>
-
-    <div id="step2" class="hidden">
-      <h2>Step 2: 추가 정보 입력</h2>
-
-      <div class="checkbox-wrapper"><span class="question">닉네임 사용</span><input type="checkbox" id="useNick" /></div>
-      <input id="nickname" type="text" placeholder="닉네임 입력" />
-
-      <div class="checkbox-wrapper"><span class="question">반려동물 이름 사용</span><input type="checkbox" id="usePet" /></div>
-      <input id="petNames" type="text" placeholder="쉼표로 구분 (예: coco, choco)" />
-
-      <div class="checkbox-wrapper"><span class="question">자주 사용하는 숫자 사용</span><input type="checkbox" id="useFavNums" /></div>
-      <input id="favNums" type="text" placeholder="쉼표로 구분 (예: 77, 14, 99)" />
-
-      <button id="generate">비밀번호 생성</button>
-      <button id="endpage">내가 생각했던 비밀번호는 안전할까?</button>
-    </div>
-
-    <div id="resultBox"></div>
-  </div>
-</body>
+  </body>
 </html>
