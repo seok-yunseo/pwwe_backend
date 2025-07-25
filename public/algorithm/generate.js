@@ -1,15 +1,9 @@
-// nord 데이터 파일 경로 설정
-const NORD_FILES = {
-  letters: '../../pwdb/nord_letters.json',
-  mixed: '../../pwdb/nord_mixed.json',
-  numeric: '../../pwdb/nord_numeric.json',
-};
-
+// nord 데이터 API 호출 방식으로 변경
 async function loadNordData() {
   const [letters, mixed, numeric] = await Promise.all([
-    fetch(NORD_FILES.letters).then((r) => r.json()),
-    fetch(NORD_FILES.mixed).then((r) => r.json()),
-    fetch(NORD_FILES.numeric).then((r) => r.json()),
+    fetch('/api/nord/letters').then((r) => r.json()),
+    fetch('/api/nord/mixed').then((r) => r.json()),
+    fetch('/api/nord/numeric').then((r) => r.json())
   ]);
 
   return {
@@ -29,12 +23,14 @@ function isValid(pw) {
   );
 }
 
-// Userdata 기반 생성 (그대로 유지)
+// Userdata 기반 생성
 function generateFromUserInfo(info) {
   const baseWords = [];
 
-  if (!info.options.useNick && info.nickname) baseWords.push(info.nickname.toLowerCase());
-  if (!info.options.usePet && info.petNames?.length) baseWords.push(...info.petNames.map((p) => p.toLowerCase()));
+  if (!info.options.useNick && info.nickname)
+    baseWords.push(info.nickname.toLowerCase());
+  if (!info.options.usePet && info.petNames?.length)
+    baseWords.push(...info.petNames.map((p) => p.toLowerCase()));
 
   if (!info.options.useName) {
     if (info.firstName) baseWords.push(info.firstName.toLowerCase());
@@ -46,10 +42,12 @@ function generateFromUserInfo(info) {
     const initialsFirst = [];
 
     if (info.lastName) {
-      for (const ch of info.lastName) if (/[A-Z]/.test(ch)) initialsLast.push(ch.toLowerCase());
+      for (const ch of info.lastName)
+        if (/[A-Z]/.test(ch)) initialsLast.push(ch.toLowerCase());
     }
     if (info.firstName) {
-      for (const ch of info.firstName) if (/[A-Z]/.test(ch)) initialsFirst.push(ch.toLowerCase());
+      for (const ch of info.firstName)
+        if (/[A-Z]/.test(ch)) initialsFirst.push(ch.toLowerCase());
     }
 
     if (initialsLast.length || initialsFirst.length) {
@@ -62,7 +60,9 @@ function generateFromUserInfo(info) {
       }
       if (initialsFirst.length) combinations.add(initialsFirst.join(''));
       if (initialsFirst.length && info.lastName)
-        combinations.add(initialsFirst.join('') + info.lastName.toLowerCase());
+        combinations.add(
+          initialsFirst.join('') + info.lastName.toLowerCase()
+        );
 
       initialsLast.forEach((ch) => combinations.add(ch));
       initialsFirst.forEach((ch) => combinations.add(ch));
@@ -73,8 +73,20 @@ function generateFromUserInfo(info) {
 
   // numberParts
   const numberParts = [];
-  if (info.birthYear && info.birthMonth && info.birthDay && !info.options.noBirth) {
-    numberParts.push(info.birthYear, info.birthYear.slice(2), info.birthMonth, info.birthDay, info.birthMonth + info.birthDay, info.birthYear.slice(2) + info.birthMonth + info.birthDay);
+  if (
+    info.birthYear &&
+    info.birthMonth &&
+    info.birthDay &&
+    !info.options.noBirth
+  ) {
+    numberParts.push(
+      info.birthYear,
+      info.birthYear.slice(2),
+      info.birthMonth,
+      info.birthDay,
+      info.birthMonth + info.birthDay,
+      info.birthYear.slice(2) + info.birthMonth + info.birthDay
+    );
   }
   if (info.phone?.length >= 8 && !info.options.noPhone) {
     numberParts.push(info.phone.slice(-4), info.phone.slice(-8, -4));
@@ -82,7 +94,8 @@ function generateFromUserInfo(info) {
   if (info.homePhone?.length >= 7 && !info.options.noHomePhone) {
     numberParts.push(info.homePhone.slice(-4), info.homePhone.slice(-7, -4));
   }
-  if (!info.options.useFavNums && info.favNums?.length) numberParts.push(...info.favNums);
+  if (!info.options.useFavNums && info.favNums?.length)
+    numberParts.push(...info.favNums);
 
   const specials = ['!', '@', '#', '$'];
   const results = new Set();
@@ -91,8 +104,12 @@ function generateFromUserInfo(info) {
     for (let num of numberParts) {
       for (let s of specials) {
         const patterns = [
-          `${s}${word}${num}`, `${word}${num}${s}`, `${word}${s}${num}`,
-          `${s}${num}${word}`, `${num}${word}${s}`, `${num}${s}${word}`
+          `${s}${word}${num}`,
+          `${word}${num}${s}`,
+          `${word}${s}${num}`,
+          `${s}${num}${word}`,
+          `${num}${word}${s}`,
+          `${num}${s}${word}`,
         ];
         for (let pw of patterns) if (isValid(pw)) results.add(pw);
       }
@@ -110,8 +127,12 @@ function generateFromNordWords(nordWords = [], numberParts = []) {
     for (let num of numberParts) {
       for (let s of specials) {
         const patterns = [
-          `${s}${word}${num}`, `${word}${num}${s}`, `${word}${s}${num}`,
-          `${s}${num}${word}`, `${num}${word}${s}`, `${num}${s}${word}`
+          `${s}${word}${num}`,
+          `${word}${num}${s}`,
+          `${word}${s}${num}`,
+          `${s}${num}${word}`,
+          `${num}${word}${s}`,
+          `${num}${s}${word}`,
         ];
         for (let pw of patterns) if (isValid(pw)) results.add(pw);
       }
@@ -121,7 +142,13 @@ function generateFromNordWords(nordWords = [], numberParts = []) {
 }
 
 // Mixed 생성 (10,000개 제한)
-function generateMixPasswords(userWords = [], userNumbers = [], nordWords = [], nordNumbers = [], limit = 10000) {
+function generateMixPasswords(
+  userWords = [],
+  userNumbers = [],
+  nordWords = [],
+  nordNumbers = [],
+  limit = 10000
+) {
   const specials = ['!', '@', '#', '$'];
   const mixResults = new Set();
 
@@ -133,10 +160,18 @@ function generateMixPasswords(userWords = [], userNumbers = [], nordWords = [], 
             if (mixResults.size >= limit) return Array.from(mixResults);
 
             const patterns = [
-              `${s}${uw}${nn}`, `${uw}${nn}${s}`, `${uw}${s}${nn}`,
-              `${s}${nn}${uw}`, `${nn}${uw}${s}`, `${nn}${s}${uw}`,
-              `${s}${nw}${un}`, `${nw}${un}${s}`, `${nw}${s}${un}`,
-              `${s}${un}${nw}`, `${un}${nw}${s}`, `${un}${s}${nw}`
+              `${s}${uw}${nn}`,
+              `${uw}${nn}${s}`,
+              `${uw}${s}${nn}`,
+              `${s}${nn}${uw}`,
+              `${nn}${uw}${s}`,
+              `${nn}${s}${uw}`,
+              `${s}${nw}${un}`,
+              `${nw}${un}${s}`,
+              `${nw}${s}${un}`,
+              `${s}${un}${nw}`,
+              `${un}${nw}${s}`,
+              `${un}${s}${nw}`,
             ];
 
             for (let pw of patterns) {
@@ -150,7 +185,6 @@ function generateMixPasswords(userWords = [], userNumbers = [], nordWords = [], 
   }
   return Array.from(mixResults);
 }
-
 
 // 최종 함수
 export async function generatePasswords(info) {
@@ -170,4 +204,3 @@ export async function generatePasswords(info) {
 
   return { user: userPw, nord: nordPw, mix: mixPw };
 }
-
