@@ -1,7 +1,7 @@
 import { generatePasswords } from './algorithm/generate.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 커스텀 체크박스 CSS만 따로 로드
+  // 커스텀 체크박스 CSS만 따로 로드
   const checkboxStyle = document.createElement('link');
   checkboxStyle.rel = 'stylesheet';
   checkboxStyle.href = './css/checkbox.css';
